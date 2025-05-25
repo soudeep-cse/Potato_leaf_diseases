@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potato Leaf Disease Detector</title>
+    <style>
+        /* Set background image */
+        body {
+            background-image: url('https://www.w3schools.com/w3images/forestbridge.jpg'); /* Background image URL */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        /* Center the content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Style the input and button */
+        input[type="file"] {
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 15px 30px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4CAF50; /* Green background for predict button */
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Add white color for class and confidence text */
+        #result {
+            color: white; /* Ensure the result text is white */
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Upload a Potato Leaf Image</h2>
+        <input type="file" id="imageInput">
+        <button onclick="predict()">Predict</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById("imageInput").files[0];
+            if (!fileInput) {
+                alert("Please upload an image.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", fileInput);
+
+            try {
+                // Debugging: Log the start of the request
+                console.log("Sending request to FastAPI...");
+                const res = await fetch("http://localhost:8000/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                // Check if the response is OK (200 status)
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                // Debugging: Log the response
+                const data = await res.json();
+                console.log("Prediction data:", data);
+
+                document.getElementById("result").innerText = 
+                    `Prediction: ${data.class} (Confidence: ${(data.confidence * 100).toFixed(2)}%)`;
+            } catch (error) {
+                // Log any errors that happen during the fetch
+                console.error("Error during prediction:", error);
+                document.getElementById("result").innerText = "Error making prediction.";
+            }
+        }
+    </script>
+</body>
+</html>
