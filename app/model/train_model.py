@@ -1,8 +1,11 @@
+from keras import layers, models
 import tensorflow as tf
-from tensorflow.keras import layers, models
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import os
+from keras import layers, models
+from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report
+import yaml
+import os
 
 def create_cnn_model(input_shape=(224, 224, 3), num_classes=3):
     model = models.Sequential([
@@ -60,6 +63,7 @@ def train_model(data_dir, epochs=20, batch_size=32):
         batch_size=batch_size,
         class_mode='categorical'
     )
+
 
     # Load validation data
     validation_generator = valid_test_datagen.flow_from_directory(
@@ -153,7 +157,6 @@ def evaluate_model(model, test_generator):
     true_classes = test_generator.classes
 
     # Print classification report
-    from sklearn.metrics import classification_report
     class_names = list(test_generator.class_indices.keys())
     print("\nClassification Report:")
     print(classification_report(true_classes, predicted_classes, target_names=class_names))

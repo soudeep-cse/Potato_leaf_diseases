@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
-from ...services.disease_detection import DiseaseDetectionService
-from ...schemas.prediction import PredictionResponse
+from app.services.disease_detection import DiseaseDetectionService
+from app.schemas.prediction import PredictionResponse
 import yaml
 import os
 
